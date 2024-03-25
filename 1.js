@@ -19,10 +19,14 @@ const io = new Server(server, {
 });
 const contacts = new Set();
 
-client.on('qr', (qr) => {
-    console.log('Login with whatsapp web');
-    qrcode.generate(qr , {small:true});
-
+app.get('/qrcode', async (req, res) => {
+    try {
+        const qrCodeData = await client.getQRCode();
+        res.send(qrCodeData);
+    } catch (error) {
+        console.error('Error generating QR code:', error);
+        res.status(500).send('Error generating QR code');
+    }
 });
 
 client.on('authenticated', (session) => {
